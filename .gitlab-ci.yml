@@ -1,14 +1,17 @@
+# image: ubuntu:16.04
+variables: 
+  CI_DEBUG_TRACE: "true"
+  # GIT_SUBMODULE_STRATEGY: recursive
 before_script:
-  - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
-  - ruby -v
-  - which ruby
-  - gem install bundler --no-ri --no-rdoc
-  - bundle install --jobs $(nproc)  "${FLAGS[@]}"
-
-rspec:
+  - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs openssh-client
+  - eval $(ssh-agent -s)
+  - chmod 0600 id_rsa
+  - ssh-add id_rsa
+  - 'test -d ~/.ssh || mkdir -p ~/.ssh'
+  - 'test -f  /.dockerenv && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+demo:
   script:
-    - bundle exec rspec
-
-rubocop:
-  script:
-    - bundle exec rubocop
+    - export 
+    - 'for remote in `git branch -r `; do git branch --track $remote; done || for remote in `git branch -r `; do git checkout $remote ; git pull; done'
+    - 'for remote in `git branch -r `; do git checkout $remote ; git pull; done'
+    - echo "Hellp world"
