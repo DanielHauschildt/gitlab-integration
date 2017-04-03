@@ -12,8 +12,7 @@ before_script:
 demo:
   script:
     - export 
-    - 'git remote add github git@github.com:DanielHauschildt/gitlab-integration.git || true'
-    - 'git remote set-url  --push github ""'
-    - 'git fetch --all' 
-    - 'for remote in `git branch -r `; do git branch --track $remote; done || for remote in `git branch -r `; do git checkout $remote ; git pull; done'
-    - 'git push --progress --follow-tags --all'
+    - 'git clone --mirror git@github.com:DanielHauschildt/gitlab-integration.git github'
+    - 'cd github'
+    - 'git remote add --mirror=push gitlab git@gitlab.9elements.com:daniel.hauschildt/gitlab-integration.git || true'
+    - 'git push gitlab'
